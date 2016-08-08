@@ -6,12 +6,18 @@ var childProcess = require('child_process');
 var commander = require('commander');
 var colors = require('colors');
 
-//  translate -t [path|file] excelFile
-//  translate -g [path|file] targetExcelFile
 exports.name = 'translate';
 exports.register = function(c) {
 
     var mode;
+    var phpPaths = [];
+    var country = process.cwd().match(/source[\/\\](.*?)[\/\\]/);
+    country = country ? country[1] + '-' : ''; 
+    
+
+    var getExcelPath = './mz-translate-' + country + path.basename(process.cwd()) + '.xlsx'; // 生成的未翻译的excel
+    var setExcelPath; // 已翻译的excel
+    var distDir = './mz-translated'; 
 
 
     commander
@@ -20,22 +26,18 @@ exports.register = function(c) {
             mode = _mode;
         })
         .option('-p, --php [value]', 'PHP 文件路径（多个用逗号隔开），默认是当前目录下的所有 php 文件')
-        .option('-e, --excel [path]', 'Excel(.xlsx) 文件路径， 默认生成 ./mz-i18n-translate.xlsx')
-        .option('-d, --dist [path]', '已翻译文件存放路径， 默认 ./mz-i18n-translated')
+        .option('-e, --excel [path]', 'excel(.xlsx) 文件路径， 默认生成 ./mz-translate-<当前国家>-<当前目录名>.xlsx')
+        .option('-d, --dist [path]', '已翻译文件存放路径， 默认 ./mz-translated')
         .on('--help', function() {
             console.log('  mode: ');
             console.log('');
             console.log('    get -- 从 php 文件生成 Excel(.xlsx) 文件');
-            console.log('    set -- 用翻译好的 excel 文件翻译 php 文件，默认使用当前目录吓得 excel 文件');
+            console.log('    set -- 用翻译好的 excel 文件翻译 php 文件，默认使用当前目录下的 excel 文件');
             console.log('');
         })
         .parse(process.argv);
 
 
-    var phpPaths = [];
-    var getExcelPath = './mz-translate-' + path.basename(process.cwd()) + '.xlsx'; // 未翻译的excel
-    var setExcelPath; // 已翻译的excel
-    var distDir = './mz-translated'; 
 
     // php paths
     if (typeof commander.php === 'string') { 
@@ -110,9 +112,4 @@ exports.register = function(c) {
     } else {
         commander.outputHelp();
     }
-
-
-
-
-
 }

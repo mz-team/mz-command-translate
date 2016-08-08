@@ -1,7 +1,7 @@
 var path = require('path');
 var Excel = require('exceljs');
+var XLSX = require('xlsx');
 var childProcess = require('child_process');
-
 
 function getTextObjFromPHP(phpPath) {
 
@@ -105,6 +105,8 @@ function createExcel(phpPaths, target) {
 
 			var row = 1;
 			excelKeys[filename].forEach(function(str, i) {
+
+				// 删除多余空行
 				if (i > 0 && str === '' && str === excelKeys[filename][i-1]) {
 					return;
 				}

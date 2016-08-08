@@ -10,7 +10,7 @@ function readExcelFile(excelFile) {
         var excelTextObj = {};
         var sheetNames = workbook.SheetNames;
 
-        // console.log(workbook.Sheets);return
+        console.log(workbook.Sheets);return
         sheetNames.forEach(function(sheetName) { /* iterate through sheets */
             var worksheet = workbook.Sheets[sheetName];
             var sheetTextObj = {};
