@@ -8,7 +8,7 @@
 ## 插件用法（mz translate -h）
 
 
-```javascript
+```
 Usage: mz mz translate <mode> [-p paths] [-e path] [-d dist]
 
 mode:
