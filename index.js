@@ -21,7 +21,7 @@ exports.register = function(c) {
 
 
     commander
-    	.usage('mz translate <mode> [-p paths] [-e path] [-d dist]')
+        .usage('mz translate <mode> [-p paths] [-e path] [-d dist]')
         .action(function(cmd, _mode) {
             mode = _mode;
         })
@@ -69,11 +69,11 @@ exports.register = function(c) {
         getExcelPath = commander.excel;
         setExcelPath = commander.excel;
     } else {
-    	// find excel file in current path
-    	setExcelPath = fs.readdirSync('./').filter(function(filename) {
-    		return /.xlsx$/.test(filename);
-    	});
-    	setExcelPath = setExcelPath.length ? setExcelPath[0] : null;
+        // find excel file in current path
+        setExcelPath = fs.readdirSync('./').filter(function(filename) {
+            return /.xlsx$/.test(filename);
+        });
+        setExcelPath = setExcelPath.length ? setExcelPath[0] : null;
     }
 
     // dist path
@@ -106,7 +106,7 @@ exports.register = function(c) {
             fs.mkdirSync(path.resolve(distDir));
         }
         if (!fs.existsSync(setExcelPath)) {
-        	console.log('未指定或未找到用于翻译的 excel 文件'.red);
+            console.log('未指定或未找到用于翻译的 excel 文件'.red);
         }
         translator.translate(phpPaths, setExcelPath, distDir);
     } else {

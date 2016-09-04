@@ -26,8 +26,12 @@ function readExcelFile(excelFile) {
                     aCell = worksheet[z];
                     bCell = worksheet[z.replace('A', 'B')];
 
-                    aCellVal = (aCell.v ? aCell.v.trim() : '')
-                    bCellVal = bCell ? (bCell.v ? bCell.v.trim() : '') : '';
+                    aCellVal = (aCell.v ? aCell.v : '')
+                    bCellVal = bCell ? (bCell.v ? bCell.v : '') : '';
+
+                    aCellVal = aCellVal.trim ? aCellVal.trim() : aCellVal;
+                    bCellVal = bCellVal.trim ? bCellVal.trim() : bCellVal;
+
                     if (aCellVal) {
                         sheetTextObj[aCellVal.trim().replace(/\s+/g, ' ')] = bCellVal;
                     }
@@ -47,7 +51,7 @@ function translateFile(phpPath, textObj) {
     var phpStr = fs.readFileSync(phpPath, { encoding: 'utf8' });
     var sentenceRegx = /(\'(|[\s\S\n]*?[^\\])\'|\"(|[\s\S\n]*?[^\\])\")(\s*\=>)?/gm;
 
-    var replaceFailStrs = [];
+    var replaceFailStrs = []; 
 
     function translateSentence(s, textObj) {
         var s = s.trim().replace(/\s+/g, ' ');
@@ -56,8 +60,8 @@ function translateFile(phpPath, textObj) {
         for (var key in textObj) {
             t = key.trim().replace(/\s+/g, ' ');
 
-            // 字符串相似程度 大于0.85
-            if (cDistancePercent(s, t) > 0.85) {
+            // 字符串相似程度 大于0.98
+            if (cDistancePercent(s, t) > 0.98) {
                 return textObj[key];
             }
         }
@@ -94,13 +98,13 @@ function translateFile(phpPath, textObj) {
                 replaceFailStrs.push(rawStr);
             }
         }
+        translatedStr += '';
         return qoute + translatedStr.replace(qouteRegx, '\\' + qoute) + qoute;
     });
     return {
         translatedStr: phpStr,
         fails: replaceFailStrs
     };
-    //console.log(phpStr.match(sentenceRegx));
 }
 
 
@@ -118,14 +122,15 @@ function translate(phpPaths, excelFile, target) {
         phpPaths.forEach(function(phpPath) {
             filename = path.basename(phpPath);
             filenameNoExt = path.basename(phpPath, '.php');
+            logStr = '';
             if (textObjs[filenameNoExt]) {
                 translated[filenameNoExt] = translateFile(phpPath, textObjs[filenameNoExt]);
                 fs.writeFileSync(path.join(target, path.basename(phpPath)), translated[filenameNoExt].translatedStr);
 
                 if (translated[filenameNoExt].fails.length) {
+                    logStr += (filename + ' - ' + ' 这些句子没有被正确翻译，请检查日志文件 ' + logFileName + ': ').red;
                     logStr += '\n\n' + translated[filenameNoExt].fails.join('\n') + '\n\n\n\n';
                     logStrs += logStr;
-                    console.log((filename + ' - ' + ' 这些句子没有被正确翻译，请检查日志文件 ' + logFileName + ': ').red);
                     console.log(logStr.red);
                 } else {
                     console.log((filename + ': ' + 'Translate successfully!').green);
@@ -133,8 +138,9 @@ function translate(phpPaths, excelFile, target) {
             }
         });
 
-        if (logStrs)
+        if (logStrs) {
             fs.writeFileSync(path.join(target, logFileName), logStrs);
+        }
 
     }).catch(function(err) {
         console.log(err.stack);
