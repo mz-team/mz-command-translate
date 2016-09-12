@@ -54,11 +54,11 @@ function translateFile(phpPath, textObj) {
     var replaceFailStrs = []; 
 
     function translateSentence(s, textObj) {
-        var s = s.trim().replace(/\s+/g, ' ');
+        var s = s.trim().replace(/\s+/g, ' ').toLowerCase();
         var t;
 
         for (var key in textObj) {
-            t = key.trim().replace(/\s+/g, ' ');
+            t = key.trim().replace(/\s+/g, ' ').toLowerCase();
 
             // 字符串相似程度 大于0.98
             if (cDistancePercent(s, t) > 0.98) {
