@@ -65,13 +65,13 @@ exports.register = function(c) {
 
     // excel path
     if (typeof commander.excel === 'string' &&
-        path.extname(commander.excel) === '.xlsx') {
+        path.extname(commander.excel).toLowerCase() === '.xlsx') {
         getExcelPath = commander.excel;
         setExcelPath = commander.excel;
     } else {
         // find excel file in current path
         setExcelPath = fs.readdirSync('./').filter(function(filename) {
-            return /.xlsx$/.test(filename);
+            return /.xlsx$/.test(filename.toLowerCase());
         });
         setExcelPath = setExcelPath.length ? setExcelPath[0] : null;
     }
@@ -80,7 +80,6 @@ exports.register = function(c) {
     if (typeof commander.dist === 'string') {
         distDir = commander.dist;
     }
-
 
     // console.log(phpPaths);
     // console.log('\n\n');

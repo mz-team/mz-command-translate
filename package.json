@@ -1,6 +1,6 @@
 {
   "name": "mz-command-translate",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "i18n translate plugin",
   "main": "index.js",
   "scripts": {
